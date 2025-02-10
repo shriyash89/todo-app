@@ -9,7 +9,7 @@
                 <div>
                     <div class="card mt-4">
                         <div class="p-0 card-body border border-dark rounded">
-                            <AddTask v-on:addNewTask="updateTasks($event)" ></AddTask>
+                            <AddTask />
                         </div>
                     </div>
                 
@@ -61,9 +61,10 @@
 </template>
 
 <script>
-import {v4 as uuidv4} from 'uuid';
 import AddTask from './AddTask.vue';
 import TaskItem from './TaskItem.vue';
+import { mapState } from 'pinia';
+import { useTaskStore } from '@/store/TaskStore';
 
 export default {
     components : {
@@ -72,45 +73,57 @@ export default {
     },
     data() {
         return {
-            tasks : [],
-            doneCount : 0
+            // tasks : [],
+            // doneCount : 0
         };
     },
+    computed : {
+        ...mapState(useTaskStore, ['tasks', 'doneCount'])
+    },
     methods: {
-        updateTasks:function(newTask){
-            const newObj = {
-                task : newTask,
-                key : uuidv4(),
-                isDone : false
-            }
-            this.tasks.push(newObj)
-        },
-        updateDone:function(doneUpdate){
-            let index = doneUpdate.key
-            for(let t of this.tasks){
-                if(t.key === index)
-                    t.isDone = doneUpdate.isDone
-            }
+        // updateTasks:function(newTask){
+        //     const newObj = {
+        //         task : newTask,
+        //         key : uuidv4(),
+        //         isDone : false
+        //     }
+        //     this.tasks.push(newObj)
+        // },
+        // updateDone:function(doneUpdate){
+        //     let index = doneUpdate.key
+        //     for(let t of this.tasks){
+        //         if(t.key === index)
+        //             t.isDone = doneUpdate.isDone
+        //     }
             
-            let cnt = 0
-            for(let t of this.tasks){
-                if(t.isDone === true)
-                    cnt++
-                console.log(this.doneCount)
-                this.doneCount = cnt
-                console.log(this.doneCount)
-            }
+        //     let cnt = 0
+        //     for(let t of this.tasks){
+        //         if(t.isDone === true)
+        //             cnt++
+        //         console.log(this.doneCount)
+        //         this.doneCount = cnt
+        //         console.log(this.doneCount)
+        //     }
             
-        },
-        editTask:function(updatedTask){
-            let index = updatedTask.key
-            for(let t of this.tasks){
-                if(t.key === index)
-                    t.task = updatedTask.task
-            }
-        },
-        deleteTask:function(key){
-            this.tasks = this.tasks.filter(t=>t.key!==key)
+        // },
+        // editTask:function(updatedTask){
+        //     let index = updatedTask.key
+        //     for(let t of this.tasks){
+        //         if(t.key === index)
+        //             t.task = updatedTask.task
+        //     }
+        // },
+        // deleteTask:function(key){
+        //     this.tasks = this.tasks.filter(t=>t.key!==key)
+        // }
+    },
+    watch : {
+        tasks : { 
+            handler(newVal){
+                let newTasks = JSON.stringify(newVal)
+                localStorage.setItem('tasks', newTasks)
+            },
+            deep: true
         }
     }
 };
