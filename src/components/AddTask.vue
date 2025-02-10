@@ -15,6 +15,10 @@
 </template>
 
 <script>
+import { useTaskStore } from '@/store/TaskStore';
+import { mapActions } from 'pinia';
+import {v4 as uuidv4} from 'uuid';
+
 export default {
   data() {
     return {
@@ -22,10 +26,16 @@ export default {
     };
   },
   methods: {
+    ...mapActions(useTaskStore, ['updateTask']),
     handleAdd:function(){
       this.task = this.task.trim()
       if(this.task !== ''){
-          this.$emit('addNewTask', this.task)
+          this.updateTask({
+                task : this.task,
+                key : uuidv4(),
+                isDone : false
+          })
+          // this.$emit('addNewTask', this.task)
           this.task = ''
       }
     }

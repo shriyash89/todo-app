@@ -34,9 +34,6 @@
             </svg>
           </button>
         </div>
-        
-        <!-- <button v-on:click="wantToEdit=true" v-if="!wantToEdit && !task.isDone" >Edit</button> -->
-        <!-- <button v-if="!wantToEdit" v-on:click="deleteTask" ></button> -->
 
     </div>
 
@@ -45,28 +42,17 @@
         <p>Are you sure to delete?</p>
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" style="margin-right: 10px;" data-bs-dismiss="modal" v-on:click="wantToDelete=false" >Close</button>
-            <button type="button" class="btn btn-danger" v-on:click="deleteTask" >Delete</button>
+            <button type="button" class="btn btn-danger" v-on:click="deleteToDo" >Delete</button>
         </div>
       </div>
     </div>
-
-    <!-- <div v-if="wantToDelete" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <p>Are you sure to delete?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" style="margin-right: 10px;" data-bs-dismiss="modal" v-on:click="wantToDelete=false" >Close</button>
-            <button type="button" class="btn btn-danger" v-on:click="deleteTask" >Delete</button>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script>
+import { useTaskStore } from '@/store/TaskStore';
+import { mapActions } from 'pinia';
+
 export default {
   props : ['task'],
   data() {
@@ -78,15 +64,19 @@ export default {
     };
   },
   methods: {
+    ...mapActions(useTaskStore, ['updateDone', 'editTask', 'deleteTask']),
     handleCheck:function(){
-      this.$emit('updateDone', {key:this.task?.key, isDone: this.isChecked})
+      // this.$emit('updateDone', {key:this.task?.key, isDone: this.isChecked})
+      this.updateDone({key:this.task?.key, isDone: this.isChecked})
     },
     updateTask:function(){
-      this.$emit('editTask', {key:this.task?.key, "task" : this.t})
+      // this.$emit('editTask', {key:this.task?.key, "task" : this.t})
+      this.editTask({key:this.task?.key, "task" : this.t})
       this.wantToEdit = false
     },
-    deleteTask:function(){
-      this.$emit('deleteTask', this.task?.key)
+    deleteToDo:function(){
+      // this.$emit('deleteTask', this.task?.key)
+      this.deleteTask(this.task?.key)
     }
   }
 };
