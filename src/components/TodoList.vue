@@ -63,7 +63,7 @@
 <script>
 import AddTask from './AddTask.vue';
 import TaskItem from './TaskItem.vue';
-import { mapState } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useTaskStore } from '@/store/TaskStore';
 
 export default {
@@ -78,9 +78,10 @@ export default {
         };
     },
     computed : {
-        ...mapState(useTaskStore, ['tasks', 'doneCount'])
+        ...mapState(useTaskStore, ['tasks', 'doneCount','loggedUser'])
     },
     methods: {
+        ...mapActions(useTaskStore,['getTasks']),
         // updateTasks:function(newTask){
         //     const newObj = {
         //         task : newTask,
@@ -117,14 +118,17 @@ export default {
         //     this.tasks = this.tasks.filter(t=>t.key!==key)
         // }
     },
-    watch : {
-        tasks : { 
-            handler(newVal){
-                let newTasks = JSON.stringify(newVal)
-                localStorage.setItem('tasks', newTasks)
-            },
-            deep: true
+    watch:{
+        loggedUser(newVal){
+            // console.log("calling on watch", newVal);
+
+            if(newVal){
+                this.getTasks();
+            }
         }
+    },  
+    created(){
+        if(this.loggedUser) this.getTasks();
     }
 };
 </script>

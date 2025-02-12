@@ -67,16 +67,16 @@ export default {
     ...mapActions(useTaskStore, ['updateDone', 'editTask', 'deleteTask']),
     handleCheck:function(){
       // this.$emit('updateDone', {key:this.task?.key, isDone: this.isChecked})
-      this.updateDone({key:this.task?.key, isDone: this.isChecked})
+      this.updateDone({key:this.task?.key, isDone: this.isChecked, id:this.task.id})
     },
     updateTask:function(){
       // this.$emit('editTask', {key:this.task?.key, "task" : this.t})
-      this.editTask({key:this.task?.key, "task" : this.t})
+      this.editTask({key:this.task?.key, "task" : this.t, id:this.task.id})
       this.wantToEdit = false
     },
     deleteToDo:function(){
       // this.$emit('deleteTask', this.task?.key)
-      this.deleteTask(this.task?.key)
+      this.deleteTask(this.task?.key, this.task.id)
     }
   }
 };
